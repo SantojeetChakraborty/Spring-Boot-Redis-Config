@@ -1,11 +1,12 @@
 version: "3.9"
 
 services:
-  app:
+  product-api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: springboot_app
+    image: ${IMAGE_NAME:-product-api-app}:${IMAGE_TAG:-latest}
+    container_name: product-api
     ports:
       - "${APP_PORT}:${APP_PORT}"
     env_file:
@@ -13,12 +14,6 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${APP_PORT}/actuator/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: always
 
   redis:
     image: redis:7.2
@@ -30,4 +25,3 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-    restart: always
